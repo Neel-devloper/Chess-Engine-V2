@@ -415,18 +415,24 @@ def main():
                     # If it's a promotion move, ask
                     if chess.square_rank(selected_sq) in (6,) and chess.square_rank(sq) in (7,) and board.piece_at(selected_sq) and board.piece_at(selected_sq).piece_type == chess.PAWN and board.turn == chess.WHITE:
                         # white promoting
-                        if board.is_legal(move):
-                            ptype = promotion_choice(screen, flipped, selected_sq, sq, board, status_font)
-                            if ptype:
-                                move = chess.Move(selected_sq, sq, promotion=ptype)
+                        ptype = promotion_choice(screen, flipped, selected_sq, sq, board, status_font)
+                        if ptype:
+                            move = chess.Move(selected_sq, sq, promotion=ptype)
+                        else:
+                            move = None  # cancel promotion
                     elif chess.square_rank(selected_sq) in (1,) and chess.square_rank(sq) in (0,) and board.piece_at(selected_sq) and board.piece_at(selected_sq).piece_type == chess.PAWN and board.turn == chess.BLACK:
                         # black promoting
-                        if board.is_legal(move):
-                            ptype = promotion_choice(screen, flipped, selected_sq, sq, board, status_font)
-                            if ptype:
-                                move = chess.Move(selected_sq, sq, promotion=ptype)
+                        ptype = promotion_choice(screen, flipped, selected_sq, sq, board, status_font)
+                        if ptype:
+                            move = chess.Move(selected_sq, sq, promotion=ptype)
+                        else:
+                            move = None  # cancel promotion
 
-                    if move in board.legal_moves:
+                    if move is None:
+                        # promotion cancelled
+                        selected_sq = None
+                        legal_targets = []
+                    elif move in board.legal_moves:
                         board.push(move)
                         last_move = move
                         selected_sq = None
